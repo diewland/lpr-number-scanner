@@ -31,6 +31,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -41,6 +42,9 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
 
   private final FirebaseVisionTextDetector detector;
   private Context previewCtx;
+
+  private String prev_lp_no = null;
+  private Pattern digitPattern = Pattern.compile("\\d{4}"); // sample pattern ex. lp num that has 4 digits
 
   public TextRecognitionProcessor(Context ctx) {
     detector = FirebaseVision.getInstance().getVisionTextDetector();
@@ -69,34 +73,22 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
     graphicOverlay.clear();
     List<FirebaseVisionText.Block> blocks = results.getBlocks();
 
-    String text_idcard = "";
-
     for (int i = 0; i < blocks.size(); i++) {
       List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
       for (int j = 0; j < lines.size(); j++) {
         List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
         for (int k = 0; k < elements.size(); k++) {
-          // uncomment to draw detection boxes on screen
-          GraphicOverlay.Graphic textGraphic = new TextGraphic(graphicOverlay, elements.get(k));
-          graphicOverlay.add(textGraphic);
-          /*
-          */
           String t_str = elements.get(k).getText();
-          if(android.text.TextUtils.isDigitsOnly(t_str)){
-              text_idcard += t_str;
-          }
-          else {
-              if(text_idcard.length() == 13){ // detect Thai ID logic
-                  Log.d(TAG, text_idcard);
-                  Activity act = (Activity) previewCtx;
-                  Intent intent = new Intent();
-                  intent.putExtra("ACC_ID", text_idcard);
-                  act.setResult(RESULT_OK, intent);
-                  act.finish();
-              }
-              else {
-                  text_idcard = "";
-              }
+          if(digitPattern.matcher(t_str).matches() && (!t_str.equals(prev_lp_no))){
+
+            Log.d(TAG, t_str); // TODO preview on screen
+
+            // draw detected object
+            GraphicOverlay.Graphic textGraphic = new TextGraphic(graphicOverlay, elements.get(k));
+            graphicOverlay.add(textGraphic);
+
+            // update previous lp number
+            prev_lp_no = t_str;
           }
         }
       }

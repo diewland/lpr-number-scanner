@@ -34,6 +34,7 @@ public class LivePreviewActivity extends AppCompatActivity implements OnRequestP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         Log.d(TAG, "onCreate");
 
         setContentView(R.layout.live_preview);
