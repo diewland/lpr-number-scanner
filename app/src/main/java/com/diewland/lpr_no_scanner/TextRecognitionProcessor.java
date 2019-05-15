@@ -15,9 +15,9 @@ package com.diewland.lpr_no_scanner;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.diewland.lpr_no_scanner.helper.FrameMetadata;
 import com.diewland.lpr_no_scanner.helper.GraphicOverlay;
@@ -30,10 +30,10 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static android.app.Activity.RESULT_OK;
 
 /** Processor for the text recognition demo. */
 public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVisionText> {
@@ -79,17 +79,33 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
         List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
         for (int k = 0; k < elements.size(); k++) {
           String t_str = elements.get(k).getText();
-          if(digitPattern.matcher(t_str).matches() && (!t_str.equals(prev_lp_no))){
 
-            Log.d(TAG, t_str); // TODO preview on screen
+          // pattern matched
+          if(digitPattern.matcher(t_str).matches()){
 
             // draw detected object
             GraphicOverlay.Graphic textGraphic = new TextGraphic(graphicOverlay, elements.get(k));
             graphicOverlay.add(textGraphic);
 
-            // update previous lp number
-            prev_lp_no = t_str;
+            // not previous matched
+            if(!t_str.equals(prev_lp_no)){
+
+                // build output string
+                Date d =new Date();
+                String ts = new SimpleDateFormat("mm:ss.SSS").format(d);
+                String log = ts + " => " + t_str;
+
+                // print lp-no to output
+                TextView out = (TextView)((Activity)previewCtx).findViewById(R.id.output);
+                out.setText(log + "\n" + out.getText().toString());
+                Log.d(TAG, log);
+
+                // update previous lp number
+                prev_lp_no = t_str;
+            }
+
           }
+
         }
       }
     }
