@@ -44,7 +44,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
   private Context previewCtx;
 
   private String prev_lp_no = null;
-  private Pattern digitPattern = Pattern.compile("\\d{4}"); // sample pattern ex. lp num that has 4 digits
+  private Pattern digitPattern = Pattern.compile("\\d{3,4}"); // sample pattern ex. lp num that has 3-4 digits
 
   public TextRecognitionProcessor(Context ctx) {
     detector = FirebaseVision.getInstance().getVisionTextDetector();
