@@ -27,7 +27,7 @@ import com.diewland.lpr_no_scanner.helper.GraphicOverlay.Graphic;
  */
 public class TextGraphic extends Graphic {
 
-  private static final int TEXT_COLOR = Color.WHITE;
+  private static final int TEXT_COLOR = Color.GREEN;
   private static final float TEXT_SIZE = 54.0f;
   private static final float STROKE_WIDTH = 4.0f;
 
@@ -65,7 +65,7 @@ public class TextGraphic extends Graphic {
     rect.top = translateY(rect.top);
     rect.right = translateX(rect.right);
     rect.bottom = translateY(rect.bottom);
-    canvas.drawRect(rect, rectPaint);
+    // canvas.drawRect(rect, rectPaint); TODO --- uncomment to draw rect
 
     // Renders the text at the bottom of the box.
     canvas.drawText(text.getText(), rect.left, rect.bottom, textPaint);
