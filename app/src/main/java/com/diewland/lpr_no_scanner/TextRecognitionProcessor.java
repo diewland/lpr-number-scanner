@@ -92,7 +92,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
 
                 // build output string
                 Date d =new Date();
-                String ts = new SimpleDateFormat("mm:ss.SSS").format(d);
+                String ts = new SimpleDateFormat("HH:mm:ss.SS").format(d);
                 String log = ts + " => " + t_str;
 
                 // print lp-no to output
